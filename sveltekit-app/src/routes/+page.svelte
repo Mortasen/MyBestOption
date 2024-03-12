@@ -22,6 +22,8 @@
 
 	<Counter id="0" {agent} />
 
+	<a href="/test">Test page!</a>
+
 	{#if desktop}
 		<br />
 		<br />
