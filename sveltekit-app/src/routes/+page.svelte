@@ -1,63 +1,74 @@
-<script lang="ts">
-	import Counter from '$lib/Counter.svelte';
-	import Logo from '$lib/Logo.svelte';
-	import { browser } from '$app/environment';
-
-	let desktop: string;
-
-	if (window.electron && browser) {
-		window.electron.receive('from-main', (data: any) => {
-			desktop = `Received Message "${data}" from Electron`;
-			console.log(desktop);
-		});
+<script>
+	const TAG_COLORS = {
+		'Бізнес': 'bg-red-200',
+		'Навчання': 'bg-orange-200',
+		'Програмування': 'bg-sky-200',
+		'Технології': 'bg-fuchsia-200',
+		'Інше': 'bg-yellow-200'
 	}
-
-	const agent = window.electron ? 'Electron' : 'Browser';
+	let data = [
+		{
+			'title': 'Який фреймворк для розробки кросплатформеного додатка вибрати?',
+			'rating': 45,
+			'added': '2024-03-13',
+			'tags': ['Бізнес']
+		},
+		{
+			'title': 'Перша мова програмування',
+			'rating': 85,
+			'added': '2024-03-03',
+			'tags': ['Програмування']
+		},
+		{
+			'title': 'Підбір оптимальної операційної системи!',
+			'rating': 70,
+			'added': '2024-03-07',
+			'tags': ['Технології']
+		},
+		{
+			'title': 'Куди найкраще вступити на ІТ в 2024',
+			'rating': 80,
+			'added': '2024-03-11',
+			'tags': ['Навчання']
+		},
+		{
+			'title': 'Який фреймворк для розробки кросплатформеного додатка вибрати?',
+			'rating': 45,
+			'added': '2024-03-13',
+			'tags': ['Бізнес']
+		},
+		{
+			'title': 'Перша мова програмування',
+			'rating': 85,
+			'added': '2024-03-03',
+			'tags': ['Програмування']
+		},
+		{
+			'title': 'Підбір оптимальної операційної системи!',
+			'rating': 70,
+			'added': '2024-03-07',
+			'tags': ['Технології']
+		},
+		{
+			'title': 'Куди найкраще вступити на ІТ в 2024',
+			'rating': 80,
+			'added': '2024-03-11',
+			'tags': ['Навчання']
+		},
+	]
 </script>
 
-<main>
-	<Logo />
-
-	<h1>Hello {agent}!</h1>
-
-	<Counter id="0" {agent} />
-
-	<div style="display: flex; flex-direction: column">
-		<a href="/test">Test page!</a>
-		<a href="/home">Home</a>
-	</div>
-
-	{#if desktop}
-		<br />
-		<br />
-		{desktop}
-	{/if}
+<main class="flex-grow p-6 flex flex-col gap-6 max-h-full overflow-scroll">
+	{#each data as flowchart}
+		<div class="w-full p-4 flex flex-col gap-2 rounded-xl {TAG_COLORS[flowchart.tags[0]]}">
+			<h2 class="font-medium">{flowchart.title}</h2>
+			<p>Додано: {flowchart.added}</p>
+			<div class="w-full h-2 bg-white rounded-full overflow-hidden">
+				<div class="h-full bg-green-900" style="width: {flowchart.rating}%"></div>
+			</div>
+		</div>
+	{/each}
 </main>
-
-<style>
-	:root {
-		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
-			Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-	}
-
-	:global(body) {
-		margin: 0;
-		padding: 0;
-	}
-
-	main {
-		padding: 2em 1em 1em 1em;
-		text-align: center;
-		animation: fade 1s;
-		margin: 0 auto;
-	}
-
-	@keyframes fade {
-		from {
-			opacity: 0;
-		}
-		to {
-			opacity: 1;
-		}
-	}
-</style>
+<a href="/edit-flowchart" class="absolute right-8 bottom-8 text-3xl w-14 h-14 bg-teal-300 rounded-xl shadow-xl">
+	+
+</a>
