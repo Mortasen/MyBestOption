@@ -12,7 +12,11 @@
 		<h1 class="text-xl">BestChoice</h1>
 	</div>
 	{#if ready}
-		<slot></slot>
+		<div class="flex-grow min-h-0 p-4">
+			<main class="size-full">
+				<slot />
+			</main>
+		</div>
 	{/if}
 </div>
 

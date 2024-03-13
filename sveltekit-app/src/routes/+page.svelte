@@ -58,7 +58,7 @@
 	]
 </script>
 
-<main class="flex-grow p-6 flex flex-col gap-6 max-h-full overflow-scroll">
+<main class="w-full flex flex-col gap-6 max-h-full overflow-scroll">
 	{#each data as flowchart}
 		<div class="w-full p-4 flex flex-col gap-2 rounded-xl {TAG_COLORS[flowchart.tags[0]]}">
 			<h2 class="font-medium">{flowchart.title}</h2>
