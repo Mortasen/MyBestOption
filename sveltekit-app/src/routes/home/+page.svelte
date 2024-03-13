@@ -1,39 +1,76 @@
-<style>
-	div.bar {
-		text-align: center;
-		background-color: aquamarine;
-		width: 100vw;
-		height: 48px;
-		padding: 0;
+<script>
+	const TAG_COLORS = {
+		'Бізнес': 'bg-red-200',
+		'Навчання': 'bg-orange-200',
+		'Програмування': 'bg-sky-200',
+		'Технології': 'bg-fuchsia-200',
+		'Інше': 'bg-yellow-200'
 	}
-	main {
-		padding: 24px;
-		background-color: whitesmoke;
-		display: flex;
-		flex-wrap: wrap;
-		gap: 12px;
-	}
-	main > div {
-		width: 160px;
-		height: 100px;
-		background-color: lightgreen;
-	}
-</style>
+	let data = [
+		{
+			'title': 'Який фреймворк для розробки кросплатформеного додатка вибрати?',
+			'rating': 45,
+			'added': '2024-03-13',
+			'tags': ['Бізнес']
+		},
+		{
+			'title': 'Перша мова програмування',
+			'rating': 85,
+			'added': '2024-03-03',
+			'tags': ['Програмування']
+		},
+		{
+			'title': 'Підбір оптимальної операційної системи!',
+			'rating': 70,
+			'added': '2024-03-07',
+			'tags': ['Технології']
+		},
+		{
+			'title': 'Куди найкраще вступити на ІТ в 2024',
+			'rating': 80,
+			'added': '2024-03-11',
+			'tags': ['Навчання']
+		},
+		{
+			'title': 'Який фреймворк для розробки кросплатформеного додатка вибрати?',
+			'rating': 45,
+			'added': '2024-03-13',
+			'tags': ['Бізнес']
+		},
+		{
+			'title': 'Перша мова програмування',
+			'rating': 85,
+			'added': '2024-03-03',
+			'tags': ['Програмування']
+		},
+		{
+			'title': 'Підбір оптимальної операційної системи!',
+			'rating': 70,
+			'added': '2024-03-07',
+			'tags': ['Технології']
+		},
+		{
+			'title': 'Куди найкраще вступити на ІТ в 2024',
+			'rating': 80,
+			'added': '2024-03-11',
+			'tags': ['Навчання']
+		},
+	]
+</script>
 
-<div>
-	<div class="bar font-bold">
-		BestChoice
+<div class="w-screen h-screen overflow-hidden flex flex-col bg-gray-50">
+	<div class="p-4 text-center font-semibold bg-teal-400 shadow-xl">
+		<h1 class="text-xl">BestChoice</h1>
 	</div>
-	<main>
-		<div></div>
-		<div></div>
-		<div></div>
-		<div></div>
-		<div></div>
-		<div></div>
-		<div></div>
-		<div></div>
-		<div></div>
-		<div></div>
+	<main class="flex-grow p-6 flex flex-col gap-6 max-h-full overflow-scroll">
+		{#each data as flowchart}
+			<div class="w-full p-4 flex flex-col gap-2 rounded-xl {TAG_COLORS[flowchart.tags[0]]}">
+				<h2 class="font-medium">{flowchart.title}</h2>
+				<p>Додано: {flowchart.added}</p>
+				<div class="w-full h-2 bg-white rounded-full overflow-hidden">
+					<div class="h-full bg-green-900" style="width: {flowchart.rating}%"></div>
+				</div>
+			</div>
+		{/each}
 	</main>
 </div>
