@@ -17,20 +17,22 @@ let mainWindow;
 
 function createWindow() {
 	let windowState = windowStateManager({
-		defaultWidth: 800,
-		defaultHeight: 600,
+		defaultWidth: 430,
+		defaultHeight: 932,
 	});
 
 	const mainWindow = new BrowserWindow({
 		backgroundColor: 'whitesmoke',
-		titleBarStyle: 'hidden',
+		// titleBarStyle: 'hidden',
 		autoHideMenuBar: true,
 		trafficLightPosition: {
 			x: 17,
 			y: 32,
 		},
-		minHeight: 450,
-		minWidth: 500,
+		minWidth: 430,
+		minHeight: 932,
+		maxWidth: 430,
+		maxHeight: 932,
 		webPreferences: {
 			enableRemoteModule: true,
 			contextIsolation: true,
