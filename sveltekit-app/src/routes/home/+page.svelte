@@ -21,7 +21,7 @@
 </style>
 
 <div>
-	<div class="bar">
+	<div class="bar font-bold">
 		BestChoice
 	</div>
 	<main>

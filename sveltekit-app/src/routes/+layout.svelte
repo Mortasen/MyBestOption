@@ -1,14 +1,15 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import "../app.pcss";
+    import { onMount } from 'svelte';
 
-	let ready: boolean = false;
-	onMount(() => (ready = true));
+    let ready: boolean = false;
+    onMount(() => (ready = true));
 </script>
 
-<div class="dragbar" />
+<div class="dragbar"></div>
 
 {#if ready}
-	<slot />
+	<slot></slot>
 {/if}
 
 <style>
