@@ -22,7 +22,10 @@
 
 	<Counter id="0" {agent} />
 
-	<a href="/test">Test page!</a>
+	<div style="display: flex; flex-direction: column">
+		<a href="/test">Test page!</a>
+		<a href="/home">Home</a>
+	</div>
 
 	{#if desktop}
 		<br />
