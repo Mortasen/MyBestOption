@@ -21,13 +21,13 @@
 			]
 		},
 		{
-			id: 2,
-			question: 'Чи важливо вам мати можливість оновлювати застосунок без перевірки?',
+			id: 3,
+			question: 'Чи подобаються вам low- та no-code рішення?',
 			answers: [
-				{ answer: 'Надзвичайно', nextQuestion: 6 },
-				{ answer: 'Було б непогано', nextQuestion: 7 },
-				{ answer: 'Скоріше так', nextQuestion: 8 },
-				{ answer: 'Ні', nextQuestion: 9 }
+				{ answer: 'Абсолютно!', nextQuestion: 6 },
+				{ answer: 'Напевно так', nextQuestion: 7 },
+				{ answer: 'Напевно ні', nextQuestion: 8 },
+				{ answer: 'Точно ні', nextQuestion: 9 }
 			]
 		},
 		{
