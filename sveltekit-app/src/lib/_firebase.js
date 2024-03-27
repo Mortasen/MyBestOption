@@ -1,7 +1,7 @@
-// Import the functions you need from the SDKs you need
 import { writable } from 'svelte/store';
+
 import { deleteApp, getApp, getApps, initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+// import { getAnalytics } from "firebase/analytics";
 
 import { getFirestore } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
@@ -27,19 +27,19 @@ const firebaseConfig = {
 let app;
 
 if (!getApps().length) {
-	app = initializeApp(firebaseConfig)
+	app = initializeApp(firebaseConfig);
 } else {
-	app = getApp()
-	deleteApp(app)
-	app = initializeApp(firebaseConfig)
+	app = getApp();
+	deleteApp(app);
+	app = initializeApp(firebaseConfig);
 }
 
 //const analytics = getAnalytics(app);
-export const db = getFirestore(app)
-export const auth = getAuth(app)
+export const db = getFirestore(app);
+export const auth = getAuth(app);
 
 function userStore() {
-	let unsubscribe
+	let unsubscribe;
 
 	if (!auth || !globalThis.window) {
 		console.warn('Auth is not initialized or not in browser');

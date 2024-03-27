@@ -33,12 +33,14 @@
 	alternativeLinkText="Create account"
 	on:submit={handleSignIn}
 >
-	<div>
-		<label for="email" class="mb-2">Your email</label>
-		<input bind:value={email} type="email" name="email" id="email" placeholder="name@company.com" required class="transition duration-300 ease-in-out" />
+	<div class="*:w-full">
+		<label for="email" class="mb-2 block">Your email</label>
+		<input bind:value={email} type="email" name="email" id="email"
+			   placeholder="name@company.com" required class="transition duration-300 ease-in-out">
 	</div>
-	<div>
-		<label for="password" class="mb-2">Your password</label>
-		<input bind:value={password} type="password" name="password" id="password" placeholder="••••••••" required class="transition duration-300 ease-in-out" />
+	<div class="*:w-full">
+		<label for="password" class="mb-2 block">Your password</label>
+		<input bind:value={password} type="password" name="password" id="password"
+			   placeholder="••••••••" required class="transition duration-300 ease-in-out">
 	</div>
 </AuthForm>

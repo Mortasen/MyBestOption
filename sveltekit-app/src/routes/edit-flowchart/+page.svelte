@@ -61,6 +61,8 @@
 			]
 		},
 	]
+
+	let currentFlowchart;
 	let current = undefined;
 </script>
 

@@ -59,9 +59,17 @@
 			'tags': ['Навчання']
 		},
 	]
+	import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+	import { auth } from '$lib/_firebase.js';
+	function signin () {
+		const provider = new GoogleAuthProvider();
+
+		signInWithPopup(auth, provider);
+	}
 </script>
 
 <main class="w-full flex flex-col gap-6 max-h-full overflow-scroll">
+	<a href="/auth/sign-in">Sign In</a>
 	{#each data as flowchart}
 		<a href="/flowchart/{flowchart.id}" class="w-full p-4 flex flex-col gap-2 rounded-xl {TAG_COLORS[flowchart.tags[0]]}">
 			<h2 class="font-medium">{flowchart.title}</h2>

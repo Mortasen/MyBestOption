@@ -9,36 +9,38 @@
 	export let lostPasswordLink = '';
 	export let submitButtonLabel = 'Login to your account';
 
-	export let mainClass = 'bg-gray-50 dark:bg-gray-900 w-full';
+	export let mainClass = 'bg-gray-50 w-full';
 	export let mainDivClass =
-		'flex flex-col items-center justify-center p-24 mx-auto pt:mt-0 dark:bg-gray-900';
-	export let cardH1Class = 'text-2xl font-bold text-gray-900 dark:text-white text-center';
+		'flex flex-col items-center justify-center mx-auto pt:mt-0';
+	export let cardH1Class = 'text-2xl font-bold text-center';
 </script>
 
 <div class={mainClass}>
 	<div class={mainDivClass}>
 		<!-- Card -->
-		<div class="w-full !p-10 max-w-md">
+		<div class="w-full max-w-md">
 			<h1 class={cardH1Class}>
 				{title}
 			</h1>
-			<form class="mt-8 space-y-6" on:submit|preventDefault>
+			<form class="mt-8 flex flex-col gap-6" on:submit|preventDefault>
 				<slot />
 				{#if rememberMe || lostPassword}
 					<div class="flex items-start">
 						{#if rememberMe}
-							<input type="checkbox" name="remember">Remember me</input>
+							<label>
+								<input type="checkbox" name="remember" class="mr-2 size-4">Remember me
+							</label>
 						{/if}
 						{#if lostPassword}
-							<a href={lostPasswordLink} class="ml-auto text-sm hover:no-underline hover:text-white transition">Lost Password?</a>
+							<a href={lostPasswordLink} class="ml-auto hover:no-underline transition">Lost Password?</a>
 						{/if}
 					</div>
 				{/if}
-				<div class="flex justify-center">
-					<button type="submit">{submitButtonLabel}</button>
-				</div>
+				<button type="submit" class="px-4 py-3 bg-teal-300 rounded-lg font-medium">
+					{submitButtonLabel}
+				</button>
 				{#if alternative}
-					<div class="text-md text-center text-gray-500 dark:text-gray-400">
+					<div class="text-md text-center text-gray-700">
 						{alternativeText} <a href={alternativeLink} class="hover:no-underline hover:text-white transition">{alternativeLinkText}</a>
 					</div>
 				{/if}

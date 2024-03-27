@@ -1,9 +1,13 @@
 <script lang="ts">
 	import "../app.pcss";
 	import { onMount } from 'svelte';
+	import { user } from "$lib/_firebase.js";
+	$user;
 
 	let ready: boolean = false;
-	onMount(() => (ready = true));
+	onMount(() => {
+		ready = true;
+	});
 </script>
 
 <div class="w-screen h-screen overflow-hidden flex flex-col bg-gray-50">
@@ -25,13 +29,3 @@
 		</div>
 	{/if}
 </div>
-
-<style>
-    .dragbar {
-        -webkit-app-region: drag;
-        position: absolute;
-        z-index: 100;
-        height: 40px;
-        width: 100%;
-    }
-</style>
