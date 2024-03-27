@@ -69,9 +69,8 @@
 </script>
 
 <main class="w-full flex flex-col gap-6 max-h-full overflow-scroll">
-	<a href="/auth/sign-in">Sign In</a>
 	{#each data as flowchart}
-		<a href="/flowchart/{flowchart.id}" class="w-full p-4 flex flex-col gap-2 rounded-xl {TAG_COLORS[flowchart.tags[0]]}">
+		<a href="/flowchart/{flowchart.id}" class="w-full p-4 text-black hover:text-black hover:opacity-70 flex flex-col gap-2 rounded-xl {TAG_COLORS[flowchart.tags[0]]}">
 			<h2 class="font-medium">{flowchart.title}</h2>
 			<p>Додано: {flowchart.added}</p>
 			<div class="w-full h-2 bg-white rounded-full overflow-hidden">

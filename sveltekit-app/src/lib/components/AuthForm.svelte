@@ -28,7 +28,7 @@
 					<div class="flex items-start">
 						{#if rememberMe}
 							<label>
-								<input type="checkbox" name="remember" class="mr-2 size-4">Remember me
+								<input type="checkbox" name="remember" class="text-primary-500 mr-2 size-4">Remember me
 							</label>
 						{/if}
 						{#if lostPassword}
@@ -36,12 +36,12 @@
 						{/if}
 					</div>
 				{/if}
-				<button type="submit" class="px-4 py-3 bg-teal-300 rounded-lg font-medium">
+				<button type="submit" class="px-4 py-3 rounded-lg font-medium">
 					{submitButtonLabel}
 				</button>
 				{#if alternative}
-					<div class="text-md text-center text-gray-700">
-						{alternativeText} <a href={alternativeLink} class="hover:no-underline hover:text-white transition">{alternativeLinkText}</a>
+					<div class="text-md text-center">
+						{alternativeText} <a href={alternativeLink} class="transition">{alternativeLinkText}</a>
 					</div>
 				{/if}
 			</form>
