@@ -68,10 +68,12 @@
 	let current = undefined;
 
 	import { db, user } from '$lib/_firebase.js';
-	import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
+	import { collection, addDoc, getDocs, query, where, updateDoc, doc } from 'firebase/firestore';
 
 	const flowchartsCollection = collection(db, 'flowcharts');
+	const questionsCollection = collection(db, 'questions');
 	let flowcharts = [];
+	let flowchartsSnapshot;
 
 	onMount(() => {
 		const q = query(
@@ -79,51 +81,221 @@
 			where("author", "==", $user.uid)
 		);
 		getDocs(q).then(snapshot => {
-			flowcharts = snapshot.docs.map(doc => doc.data());
+			flowchartsSnapshot = snapshot.docs;
+			flowcharts = snapshot.docs.map(doc => {
+				let d = doc.data();
+				d.id = doc.id;
+				return d;
+			});
 			console.log(flowcharts);
 		});
 	})
 
+	let selectedFlowchartId;
+	let flowchartTitle = '';
 
-	function editQuestions () {
-		addDoc(flowchartsCollection, { title: 'qoweiqowir oiqwq', author: $user.uid });
+	let selectFlowchartAccordeon = true;
+	let editFlowchartAccordeon = false;
+	let questionsAccordeon = false;
+	let editQuestionAccordeon = false;
+	let selectAnswerAccordeon = false;
+	let editAnswerAccordeon = false;
+
+	class Question {
+		_doc = null;
+		_uid = null;
+		text = '';
+		answers = [];
+
+		initFromDoc (doc) {
+			this._doc = doc;
+			this._uid = doc.id;
+			let data = doc.data();
+			this.text = data.text;
+			this.answers = data.answers;
+			return this;
+		}
+		findByUID (uid) {
+
+		}
+		save () {
+			return updateDoc(this._doc, {
+				text: this.text,
+				answers: this.answers
+			})
+		}
+	}
+
+	function editFlowchart () {
+		if (selectedFlowchartId == '#new') {
+			console.log('creating');
+			addDoc(flowchartsCollection, { title: flowchartTitle, author: $user.uid });
+			fetchQuestions()
+		} else {
+			console.log('existing');
+			updateDoc(doc(flowchartsCollection, selectedFlowchartId), { title: flowchartTitle });
+			fetchQuestions()
+		}
+	}
+
+	function editQuestion () {
+		if (selectedQuestion.id == '#new') {
+			console.log('creating');
+			addDoc(questionsCollection, {
+				id: questions.length + 1,
+				text: selectedQuestion.text,
+				author: $user.uid,
+				flowchart_id: selectedFlowchartId,
+				answers: [],
+			});
+		} else {
+			console.log('existing');
+			updateDoc(doc(questionsCollection, selectedQuestion.uid), { text: selectedQuestion.text });
+			editQuestionAccordeon = false;
+			selectAnswerAccordeon = true;
+		}
+	}
+
+	function editAnswer () {
+		console.log('answers:', selectedQuestion.answers)
+		updateDoc(doc(questionsCollection, selectedQuestion.id), { answers: selectedQuestion.answers });
+		selectAnswerAccordeon = true;
+		editAnswerAccordeon = false;
+	}
+
+	function chooseFlowchart (flowchart) {
+		console.log(flowchart);
+		selectedFlowchartId = flowchart.id;
+		flowchartTitle = flowchart.title;
+		selectFlowchartAccordeon = false;
+		editFlowchartAccordeon = true;
+	}
+
+	let selectedQuestion = { id: null, text: null, answers: [] };
+
+	function chooseQuestion (question) {
+		console.log(question);
+		selectedQuestion = question;
+		questionsAccordeon = false;
+		editQuestionAccordeon = true;
+	}
+
+	let selectedAnswer = {};
+	function chooseAnswer (answer) {
+		console.log(answer);
+		selectedAnswer = answer;
+		selectAnswerAccordeon = false;
+		editAnswerAccordeon = true;
+	}
+
+	let questions = [];
+	function fetchQuestions () {
+		const q = query(
+			questionsCollection,
+			where("flowchart_id", "==", selectedFlowchartId)
+		);
+		getDocs(q).then(snapshot => {
+			editFlowchartAccordeon = false;
+			questionsAccordeon = true;
+
+			let questionsSnapshot = snapshot.docs;
+			questions = snapshot.docs.map(doc => {
+				let d = doc.data();
+				d.uid = doc.id;
+				return d;
+			});
+			console.log(questions);
+		});
+
 	}
 </script>
 
-<style>
-	input {
-		@apply rounded-md;
-	}
-</style>
-
 <div class="size-full flex flex-col gap-4">
-	<div class="flex-grow overflow-hidden max-h-16 has-[:checked]:max-h-96 bg-primary-100 rounded-lg transition-[max-height]">
-		<label class="flex justify-center items-center text-white font-semibold h-16 bg-primary-500 rounded-lg">
+	<div class="overflow-hidden max-h-12 has-[:checked]:max-h-72 bg-purple-100 rounded-lg transition-[max-height]">
+		<label class="flex justify-center items-center text-white font-semibold h-12 bg-purple-500 rounded-lg">
 			Алгоритм
-			<input type="checkbox" class="hidden">
+			<input bind:checked={selectFlowchartAccordeon} type="checkbox" class="hidden">
 		</label>
-		<div class="p-2 space-y-6">
-			<label class="block">
-				Алгоритм:
-				<select name="" id="" class="px-2 py-1 rounded-lg">
-					{#each flowcharts as flowchart}
-						<option value={flowchart.id}>{flowchart.title}</option>
-					{/each}
-				</select>
-			</label>
-			<label>
-				Заголовок: <input type="text">
-			</label>
-			<button class="w-full">
-				Редагувати питання
+		<div class="p-2 flex flex-col gap-2">
+			{#each flowcharts as flowchart}
+				<button on:click={() => chooseFlowchart(flowchart)}>
+					{flowchart.title}
+				</button>
+			{/each}
+			<button on:click={() => chooseFlowchart({ id: '#new', title: ''})}>
+				НОВИЙ АЛГОРИТМ
 			</button>
 		</div>
 	</div>
-	<div class="has-[:checked]:flex-grow bg-green-400 rounded-lg transition-[height]">
-		<label class="flex justify-center items-center text-white h-16 bg-fuchsia-700 rounded-lg">
-			Accordeon
-			<input type="checkbox" class="hidden">
+
+	<div class="overflow-hidden max-h-12 has-[:checked]:max-h-72 bg-red-100 rounded-lg transition-[max-height]">
+		<label class="flex justify-center items-center text-white font-semibold h-12 bg-red-500 rounded-lg">
+			Редагувати Алгоритм
+			<input bind:checked={editFlowchartAccordeon} type="checkbox" class="hidden">
 		</label>
+		<div class="p-2 flex flex-col gap-2">
+			<input bind:value={flowchartTitle} type="text">
+			<button on:click={editFlowchart}>Редагувати питання</button>
+		</div>
+	</div>
+
+	<div class="overflow-hidden max-h-12 has-[:checked]:max-h-72 bg-orange-100 rounded-lg transition-[max-height]">
+		<label class="flex justify-center items-center text-white font-semibold h-12 bg-orange-500 rounded-lg">
+			Питання
+			<input bind:checked={questionsAccordeon} type="checkbox" class="hidden">
+		</label>
+		<div class="p-2 flex flex-col gap-2">
+			{#each questions as question}
+				<button on:click={() => chooseQuestion(question)}>
+					{question.id}. {question.text}
+				</button>
+			{/each}
+			<button on:click={() => chooseQuestion({ id: '#new', text: ''})}>
+				НОВЕ ПИТАННЯ
+			</button>
+		</div>
+	</div>
+
+	<div class="overflow-hidden max-h-12 has-[:checked]:max-h-72 bg-yellow-100 rounded-lg transition-[max-height]">
+		<label class="flex justify-center items-center text-white font-semibold h-12 bg-yellow-500 rounded-lg">
+			Редагувати Питання
+			<input bind:checked={editQuestionAccordeon} type="checkbox" class="hidden">
+		</label>
+		<div class="p-2 flex flex-col gap-2">
+			<input bind:value={selectedQuestion.text} type="text">
+			<button on:click={editQuestion}>Редагувати питання</button>
+		</div>
+	</div>
+
+	<div class="overflow-hidden max-h-12 has-[:checked]:max-h-72 bg-lime-100 rounded-lg transition-[max-height]">
+		<label class="flex justify-center items-center text-white font-semibold h-12 bg-lime-500 rounded-lg">
+			Відповіді
+			<input bind:checked={selectAnswerAccordeon} type="checkbox" class="hidden">
+		</label>
+		<div class="p-2 flex flex-col gap-2">
+			{#each selectedQuestion.answers as answer}
+				<button on:click={() => chooseAnswer(answer)}>
+					{answer.text}
+				</button>
+			{/each}
+			<button on:click={() => chooseAnswer({ id: '#new', text: ''})}>
+				НОВА ВІДПОВІДЬ
+			</button>
+		</div>
+	</div>
+
+	<div class="overflow-hidden max-h-12 has-[:checked]:max-h-72 bg-green-100 rounded-lg transition-[max-height]">
+		<label class="flex justify-center items-center text-white font-semibold h-12 bg-green-500 rounded-lg">
+			Редагувати Відповідь
+			<input bind:checked={editAnswerAccordeon} type="checkbox" class="hidden">
+		</label>
+		<div class="p-2 flex flex-col gap-2">
+			<input bind:value={selectedAnswer.text} type="text">
+			<label>
+				<input bind:value={selectedAnswer.next_question} type="text">
+			</label>
+			<button on:click={editAnswer}>Зберегти відповідь</button>
+		</div>
 	</div>
 <!--	<div class="flex-1 min-h-0 bg-teal-100 rounded-lg">-->
 <!--		<div class="p-2 size-full overflow-y-scroll">-->
