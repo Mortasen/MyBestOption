@@ -65,64 +65,11 @@
 
 	//
 	import { auth, db, user, flowcharts } from '$lib/_firebase.js';
-	// import { collection, getDocs, query, where } from 'firebase/firestore';
-	//
-	//
-	// import { Flowchart } from '$lib/types.js';
-	//
-	//
-	// const flowchartsCollection = collection(db, 'flowcharts');
-	//
-	//
-	// let flowcharts = [];
-	//
-	// onMount(() => {
-	// 	const q = query(
-	// 		flowchartsCollection,
-	// 	);
-	// 	getDocs(q).then(snapshot => {
-	// 		flowcharts = snapshot.docs.map(doc => Flowchart.initFromDoc(doc));
-	// 		console.log('flowcharts:', flowcharts);
-	// 	});
-	// })
 
 
-	import { collection, query, where, onSnapshot, addDoc } from "firebase/firestore";
-
-	// // const q = query(collection(db, "flowcharts"), where("state", "==", "CA"));
-	// const unsubscribe = onSnapshot(flowchartsCollection, (querySnapshot) => {
-	// 	flowcharts = [];
-	// 	querySnapshot.forEach((doc) => {
-	// 		flowcharts.push(doc.data());
-	// 	});
-	// 	console.log("Current cities in CA: ", cities.join(", "));
-	// });
-
-	function addFlowchart() {
-		// addDoc(
-		// 	flowchartsCollection,
-		// 	{
-		// 		title: '123456789',
-		// 		rating: 50,
-		// 		added: '2024-02-13',
-		// 		tags: ['Бізнес'],
-		// 	},
-		// );
-		flowcharts.add(
-			{
-				title: '123456789',
-				rating: 50,
-				added: '2024-02-13',
-				tags: ['Бізнес'],
-			},
-		);
-	}
 </script>
 
-<button on:click={addFlowchart}>
-
-</button>
-<main class="w-full flex flex-col gap-6 max-h-full overflow-scroll">
+<main class="w-full flex flex-col gap-6 max-h-full overflow-y-auto">
 	{#each $flowcharts as flowchart}
 		<a href="/flowchart/{flowchart.id}" class="w-full p-4 text-black hover:text-black hover:opacity-70 flex flex-col gap-2 rounded-xl {TAG_COLORS[flowchart.tags[0]]}">
 			<h2 class="font-medium">{flowchart.title}</h2>
