@@ -104,22 +104,38 @@
 	class Question {
 		_doc = null;
 		_uid = null;
+		id = null;
 		text = '';
 		answers = [];
 
-		initFromDoc (doc) {
-			this._doc = doc;
-			this._uid = doc.id;
+		static initFromDoc (doc) {
+			let q = new Question();
+			q._doc = doc;
+			q._uid = doc.id;
 			let data = doc.data();
-			this.text = data.text;
-			this.answers = data.answers;
-			return this;
+			q.id = data.id;
+			q.text = data.text;
+			q.answers = data.answers;
+			return q;
+		}
+
+		createDoc (id) {
+			addDoc(questionsCollection, {
+				id: id,
+				text: this.text,
+				author: $user.uid,
+				flowchart_id: selectedFlowchartId,
+				answers: [],
+			}).then(doc => {
+				this.uid = doc.id;
+				questions = [...questions, this];
+			});
 		}
 		findByUID (uid) {
 
 		}
 		save () {
-			return updateDoc(this._doc, {
+			return updateDoc(doc(questionsCollection, this._uid), {
 				text: this.text,
 				answers: this.answers
 			})
@@ -139,26 +155,20 @@
 	}
 
 	function editQuestion () {
-		if (selectedQuestion.id == '#new') {
+		if (selectedQuestion._uid === null) {
 			console.log('creating');
-			addDoc(questionsCollection, {
-				id: questions.length + 1,
-				text: selectedQuestion.text,
-				author: $user.uid,
-				flowchart_id: selectedFlowchartId,
-				answers: [],
-			});
+			selectedQuestion.createDoc(questions.length + 1);
 		} else {
 			console.log('existing');
-			updateDoc(doc(questionsCollection, selectedQuestion.uid), { text: selectedQuestion.text });
-			editQuestionAccordeon = false;
-			selectAnswerAccordeon = true;
+			selectedQuestion.save();
 		}
+		editQuestionAccordeon = false;
+		selectAnswerAccordeon = true;
 	}
 
 	function editAnswer () {
-		console.log('answers:', selectedQuestion.answers)
-		updateDoc(doc(questionsCollection, selectedQuestion.id), { answers: selectedQuestion.answers });
+		console.log('question:', selectedQuestion);
+		selectedQuestion.save();
 		selectAnswerAccordeon = true;
 		editAnswerAccordeon = false;
 	}
@@ -171,10 +181,12 @@
 		editFlowchartAccordeon = true;
 	}
 
-	let selectedQuestion = { id: null, text: null, answers: [] };
+	let selectedQuestion = new Question();
 
 	function chooseQuestion (question) {
-		console.log(question);
+		if (question === undefined)
+			question = new Question();
+		console.log('chooseQuestion:', question);
 		selectedQuestion = question;
 		questionsAccordeon = false;
 		editQuestionAccordeon = true;
@@ -182,8 +194,11 @@
 
 	let selectedAnswer = {};
 	function chooseAnswer (answer) {
-		console.log(answer);
+		if (answer === undefined)
+			answer = { text: '', next_question: null }
+			selectedQuestion.answers = [...selectedQuestion.answers, answer ];
 		selectedAnswer = answer;
+		console.log(answer);
 		selectAnswerAccordeon = false;
 		editAnswerAccordeon = true;
 	}
@@ -199,11 +214,7 @@
 			questionsAccordeon = true;
 
 			let questionsSnapshot = snapshot.docs;
-			questions = snapshot.docs.map(doc => {
-				let d = doc.data();
-				d.uid = doc.id;
-				return d;
-			});
+			questions = snapshot.docs.map(doc => Question.initFromDoc(doc));
 			console.log(questions);
 		});
 
@@ -211,80 +222,80 @@
 </script>
 
 <div class="size-full flex flex-col gap-4">
-	<div class="overflow-hidden max-h-12 has-[:checked]:max-h-72 bg-purple-100 rounded-lg transition-[max-height]">
+	<div class="overflow-hidden max-h-12 has-[:checked]:max-h-screen bg-purple-100 rounded-lg transition-[max-height]">
 		<label class="flex justify-center items-center text-white font-semibold h-12 bg-purple-500 rounded-lg">
 			Алгоритм
 			<input bind:checked={selectFlowchartAccordeon} type="checkbox" class="hidden">
 		</label>
 		<div class="p-2 flex flex-col gap-2">
 			{#each flowcharts as flowchart}
-				<button on:click={() => chooseFlowchart(flowchart)}>
+				<button on:click={() => chooseFlowchart(flowchart)} class="bg-purple-400 hover:bg-purple-600">
 					{flowchart.title}
 				</button>
 			{/each}
-			<button on:click={() => chooseFlowchart({ id: '#new', title: ''})}>
+			<button on:click={() => chooseFlowchart({ id: '#new', title: ''})} class="bg-purple-400 hover:bg-purple-600">
 				НОВИЙ АЛГОРИТМ
 			</button>
 		</div>
 	</div>
 
-	<div class="overflow-hidden max-h-12 has-[:checked]:max-h-72 bg-red-100 rounded-lg transition-[max-height]">
+	<div class="overflow-hidden max-h-12 has-[:checked]:max-h-screen bg-red-100 rounded-lg transition-[max-height]">
 		<label class="flex justify-center items-center text-white font-semibold h-12 bg-red-500 rounded-lg">
 			Редагувати Алгоритм
 			<input bind:checked={editFlowchartAccordeon} type="checkbox" class="hidden">
 		</label>
 		<div class="p-2 flex flex-col gap-2">
 			<input bind:value={flowchartTitle} type="text">
-			<button on:click={editFlowchart}>Редагувати питання</button>
+			<button on:click={editFlowchart} class="bg-red-400 hover:bg-red-600">Редагувати питання</button>
 		</div>
 	</div>
 
-	<div class="overflow-hidden max-h-12 has-[:checked]:max-h-72 bg-orange-100 rounded-lg transition-[max-height]">
+	<div class="overflow-hidden max-h-12 has-[:checked]:max-h-screen bg-orange-100 rounded-lg transition-[max-height]">
 		<label class="flex justify-center items-center text-white font-semibold h-12 bg-orange-500 rounded-lg">
 			Питання
 			<input bind:checked={questionsAccordeon} type="checkbox" class="hidden">
 		</label>
 		<div class="p-2 flex flex-col gap-2">
 			{#each questions as question}
-				<button on:click={() => chooseQuestion(question)}>
+				<button on:click={() => chooseQuestion(question)} class="bg-orange-400 hover:bg-orange-600">
 					{question.id}. {question.text}
 				</button>
 			{/each}
-			<button on:click={() => chooseQuestion({ id: '#new', text: ''})}>
+			<button on:click={() => chooseQuestion()} class="bg-orange-400 hover:bg-orange-600">
 				НОВЕ ПИТАННЯ
 			</button>
 		</div>
 	</div>
 
-	<div class="overflow-hidden max-h-12 has-[:checked]:max-h-72 bg-yellow-100 rounded-lg transition-[max-height]">
+	<div class="overflow-hidden max-h-12 has-[:checked]:max-h-screen bg-yellow-100 rounded-lg transition-[max-height]">
 		<label class="flex justify-center items-center text-white font-semibold h-12 bg-yellow-500 rounded-lg">
 			Редагувати Питання
 			<input bind:checked={editQuestionAccordeon} type="checkbox" class="hidden">
 		</label>
 		<div class="p-2 flex flex-col gap-2">
 			<input bind:value={selectedQuestion.text} type="text">
-			<button on:click={editQuestion}>Редагувати питання</button>
+			<button on:click={editQuestion} class="bg-yellow-400 hover:bg-yellow-600">Редагувати питання</button>
 		</div>
 	</div>
 
-	<div class="overflow-hidden max-h-12 has-[:checked]:max-h-72 bg-lime-100 rounded-lg transition-[max-height]">
+	<div class="overflow-hidden max-h-12 has-[:checked]:max-h-screen bg-lime-100 rounded-lg transition-[max-height]">
 		<label class="flex justify-center items-center text-white font-semibold h-12 bg-lime-500 rounded-lg">
 			Відповіді
 			<input bind:checked={selectAnswerAccordeon} type="checkbox" class="hidden">
 		</label>
 		<div class="p-2 flex flex-col gap-2">
 			{#each selectedQuestion.answers as answer}
-				<button on:click={() => chooseAnswer(answer)}>
+				<button on:click={() => chooseAnswer(answer)} class="bg-lime-400 hover:bg-lime-600">
 					{answer.text}
 				</button>
 			{/each}
-			<button on:click={() => chooseAnswer({ id: '#new', text: ''})}>
+			<button on:click={() => chooseAnswer({ text: ''})} class="bg-lime-400 hover:bg-lime-600">
 				НОВА ВІДПОВІДЬ
 			</button>
 		</div>
 	</div>
 
-	<div class="overflow-hidden max-h-12 has-[:checked]:max-h-72 bg-green-100 rounded-lg transition-[max-height]">
+	<div class="overflow-hidden max-h-12 has-[:checked]:max-h-screen bg-green-100 rounded-lg transition-[max-height]">
 		<label class="flex justify-center items-center text-white font-semibold h-12 bg-green-500 rounded-lg">
 			Редагувати Відповідь
 			<input bind:checked={editAnswerAccordeon} type="checkbox" class="hidden">
@@ -294,7 +305,7 @@
 			<label>
 				<input bind:value={selectedAnswer.next_question} type="text">
 			</label>
-			<button on:click={editAnswer}>Зберегти відповідь</button>
+			<button on:click={editAnswer} class="bg-green-400 hover:bg-green-600">Зберегти відповідь</button>
 		</div>
 	</div>
 <!--	<div class="flex-1 min-h-0 bg-teal-100 rounded-lg">-->
