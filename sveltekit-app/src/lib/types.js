@@ -45,12 +45,22 @@ export class Flowchart {
 			title: this.title
 		})
 	}
+
+	data (author_id) {
+		return {
+			title: this.title,
+			rating: this.rating,
+			created: this.created,
+			tags: this.tags,
+			author: author_id,
+		}
+	}
 }
 
 export class Question {
-	_doc = null;
-	_uid = null;
-	id = null;
+	// _doc = null;
+	// _uid = null;
+	// id = null;
 	text = '';
 	author = '';
 	answers = [];
@@ -85,5 +95,15 @@ export class Question {
 			text: this.text,
 			answers: this.answers
 		})
+	}
+
+	data (index, author_id, flowchart_id) {
+		return {
+			index: index,
+			text: this.text,
+			author: author_id,
+			flowchart_id: flowchart_id,
+			answers: this.answers,
+		}
 	}
 }
