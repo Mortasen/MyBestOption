@@ -64,3 +64,86 @@ function userStore() {
 }
 
 export const user = userStore();
+
+
+
+/////////
+
+
+import { collection, query, where, onSnapshot, addDoc, deleteDoc } from "firebase/firestore";
+
+function liveCollection (collectionName, filter) {
+	let _collectionArray = [];
+	let col = collection(db, collectionName);
+
+	let q;
+	if (filter) {
+		q = query(col, where("state", "==", "CA"));
+	} else {
+		q = col;
+	}
+	const unsubscribe = onSnapshot(q, (querySnapshot) => {
+		_collectionArray = [];
+		querySnapshot.forEach((doc) => {
+			_collectionArray.push(doc.data());
+		});
+		console.log('Added collection', _collectionArray);
+		// console.log("Current cities in CA: ", cities.join(", "));
+	});
+	return _collectionArray;
+}
+
+function collectionStore (collectionName, filter) {
+	let unsubscribe;
+
+	if (!auth || !globalThis.window) {
+		console.warn('Auth is not initialized or not in browser');
+		const { subscribe } = writable(null);
+		return {
+			subscribe,
+		}
+	}
+	let _collectionArray = [];
+	let col = collection(db, collectionName);
+
+	let q;
+	if (filter) {
+		q = query(col, where("state", "==", "CA"));
+	} else {
+		q = col;
+	}
+
+	const { subscribe } = writable([], (set) => {
+		// unsubscribe = onAuthStateChanged(auth, (user) => {
+		// 	console.log('@@ Auth state changed!', user)
+		// 	set(user);
+		// });
+
+		unsubscribe = onSnapshot(q, (querySnapshot) => {
+			let _collectionArray = [];
+			querySnapshot.forEach((doc) => {
+				_collectionArray.push(doc.data());
+			});
+			set(_collectionArray);
+			console.log('Added collection', _collectionArray);
+		});
+
+		return () => unsubscribe();
+	});
+
+	const add = (data) => {
+		return addDoc(col, data);
+	}
+	const del = (id) => {
+		return deleteDoc(doc(col, id));
+	}
+
+	return {
+		subscribe,
+		add,
+		del,
+	};
+}
+
+export const flowcharts = collectionStore('flowcharts');
+export const questions = collectionStore('questions');
