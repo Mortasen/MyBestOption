@@ -3,7 +3,7 @@ import { writable } from 'svelte/store';
 import { deleteApp, getApp, getApps, initializeApp } from "firebase/app";
 // import { getAnalytics } from "firebase/analytics";
 
-import { getFirestore } from 'firebase/firestore';
+import { doc, getFirestore, updateDoc } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -93,22 +93,22 @@ function liveCollection (collectionName, filter) {
 	return _collectionArray;
 }
 
-function collectionStore (collectionName, filter) {
+export function collectionStore (collectionName, ...filters) {
 	let unsubscribe;
 
-	if (!auth || !globalThis.window) {
-		console.warn('Auth is not initialized or not in browser');
-		const { subscribe } = writable(null);
-		return {
-			subscribe,
-		}
-	}
+	// if (!auth || !globalThis.window) {
+	// 	console.warn('Auth is not initialized or not in browser');
+	// 	const { subscribe } = writable(null);
+	// 	return {
+	// 		subscribe,
+	// 	}
+	// }
 	let _collectionArray = [];
 	let col = collection(db, collectionName);
 
 	let q;
-	if (filter) {
-		q = query(col, where("state", "==", "CA"));
+	if (filters) {
+		q = query(col, ...filters);
 	} else {
 		q = col;
 	}
@@ -122,7 +122,9 @@ function collectionStore (collectionName, filter) {
 		unsubscribe = onSnapshot(q, (querySnapshot) => {
 			let _collectionArray = [];
 			querySnapshot.forEach((doc) => {
-				_collectionArray.push(doc.data());
+				let data = doc.data();
+				data.id = doc.id;
+				_collectionArray.push(data);
 			});
 			set(_collectionArray);
 			console.log('Added collection', _collectionArray);
@@ -133,6 +135,11 @@ function collectionStore (collectionName, filter) {
 
 	const add = (data) => {
 		return addDoc(col, data);
+	};
+	const update = (id, data) => {
+		delete data.id;
+		console.log('data:', data);
+		return updateDoc(doc(col, id), data);
 	}
 	const del = (id) => {
 		return deleteDoc(doc(col, id));
@@ -141,6 +148,7 @@ function collectionStore (collectionName, filter) {
 	return {
 		subscribe,
 		add,
+		update,
 		del,
 	};
 }
