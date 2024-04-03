@@ -87,7 +87,7 @@
 			questions.add(selectedQuestion.data(
 				index,
 				$user.uid,
-				selectedFlowchart.id
+				selectedFlowchart.id,
 			));
 			selectQuestionAccordeon = true;
 		} else {
@@ -166,6 +166,8 @@
 		selectAnswerAccordeon = true;
 	}
 
+	let tags = [];
+
 	// function selectAnswer (answerIndex) {
 	// 	// console.log('Selected answer index:', answerIndex);
 	// 	// console.log('q', selectedQuestion);
@@ -210,7 +212,7 @@
 <div id="top" class="size-full flex flex-col gap-4">
 	<div class="!bg-purple-100 has-[:checked]:flex-grow">
 		<label class="peer bg-purple-400">
-			Алгоритм {selectFlowchartAccordeon}
+			Алгоритм
 			<input bind:checked={selectFlowchartAccordeon} type="checkbox" class="hidden">
 		</label>
 		<div class="overflow-hidden peer-has-[:checked]:overflow-y-auto max-h-0 peer-has-[:checked]:max-h-screen peer-has-[:checked]:p-2">
@@ -243,20 +245,32 @@
 		</label>
 		<div class="overflow-hidden peer-has-[:checked]:overflow-y-auto max-h-0 peer-has-[:checked]:max-h-screen peer-has-[:checked]:p-2">
 			<label>
-				Заголовок:
+				Заголовок: {tags}
 				<textarea bind:value={selectedFlowchart.title} type="text" class="h-auto" />
 			</label>
 			<div>
 				<p>Теги:</p>
 				<label>
-					<input type="checkbox">
+					<input type="checkbox" bind:group={selectedFlowchart.tags} value="Бізнес">
 					Бізнес
 				</label>
 				<label>
-					<input type="checkbox">
+					<input type="checkbox" bind:group={selectedFlowchart.tags} value="Навчання">
+					Навчання
+				</label>
+				<br>
+				<label>
+					<input type="checkbox" bind:group={selectedFlowchart.tags} value="Програмування">
+					Програмування
+				</label>
+				<label>
+					<input type="checkbox" bind:group={selectedFlowchart.tags} value="Технології">
 					Технології
 				</label>
-
+				<label>
+					<input type="checkbox" bind:group={selectedFlowchart.tags} value="Інше">
+					Інше
+				</label>
 			</div>
 			<button on:click={saveFlowchart} class="bg-red-300 hover:bg-red-200">Зберегти алгоритм</button>
 		</div>
