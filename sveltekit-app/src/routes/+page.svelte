@@ -64,7 +64,10 @@
 	// ]
 
 	//
-	import { auth, db, user, flowcharts } from '$lib/_firebase.js';
+	import { auth, db, user, collectionStore } from '$lib/_firebase.js';
+	import { orderBy } from 'firebase/firestore';
+
+	let flowcharts = collectionStore('flowcharts', orderBy('created', 'desc'));
 
 
 </script>
