@@ -3,11 +3,11 @@
 	import { onMount } from 'svelte';
 
 	const TAG_COLORS = {
-		'Бізнес': 'bg-red-200',
-		'Навчання': 'bg-orange-200',
-		'Програмування': 'bg-sky-200',
-		'Технології': 'bg-fuchsia-200',
-		'Інше': 'bg-green-200'
+		'Бізнес': 'bg-red-600',
+		'Навчання': 'bg-orange-600',
+		'Програмування': 'bg-sky-600',
+		'Технології': 'bg-fuchsia-600',
+		'Інше': 'bg-green-600'
 	}
 	// let data = [
 	// 	{
@@ -64,21 +64,49 @@
 	// ]
 
 	//
-	import { auth, db, user, collectionStore } from '$lib/_firebase.js';
+
+	function any(iterable) {
+		for (let index = 0; index < iterable.length; index++) {
+			if (iterable[index]) return true;
+		}
+		return false;
+	}
+
+
+	import { collectionStore } from '$lib/_firebase.js';
 	import { orderBy } from 'firebase/firestore';
 
 	let flowcharts = collectionStore('flowcharts', orderBy('created', 'desc'));
 
-
+	$: flowchartsFiltered = $flowcharts.filter(f => {
+		if (selectedTags.length !== 0) {
+			return any(selectedTags.map(t => f.tags.includes(t)));
+		}
+		return true;
+	})
+	let selectedTags = [];
 </script>
 
+<div class="flex flex-row gap-2 mb-3">
+	{#each Object.keys(TAG_COLORS) as tag}
+		<label class="p-1 text-white text-sm {TAG_COLORS[tag]} rounded bg-opacity-35 has-[:checked]:bg-opacity-100 cursor-pointer">
+			{tag}
+			<input type="checkbox" bind:group={selectedTags} value={tag} class="hidden">
+		</label>
+	{/each}
+</div>
 <main class="w-full flex flex-col gap-6 max-h-full overflow-y-auto">
-	{#each $flowcharts as flowchart}
-		<a href="/flowchart/{flowchart.id}" class="w-full p-4 text-black hover:text-black hover:opacity-70 flex flex-col gap-2 rounded-xl {TAG_COLORS[flowchart.tags[0]]}">
+	{#each flowchartsFiltered as flowchart}
+		<a href="/flowchart/{flowchart.id}" class="w-full p-4 text-black hover:text-black hover:opacity-70 flex flex-col gap-2 rounded-xl bg-opacity-15 {TAG_COLORS[flowchart.tags[0]]}">
 			<h2 class="font-medium">{flowchart.title}</h2>
+			<div class="flex flex-row">
+				{#each flowchart.tags as tag}
+					<div class="p-1 text-white text-sm {TAG_COLORS[tag]} rounded">{tag}</div>
+				{/each}
+			</div>
 			<p>Додано: {flowchart.created}</p>
 			<div class="w-full h-2 bg-white rounded-full overflow-hidden">
-				<div class="h-full bg-green-900" style="width: {flowchart.rating}%"></div>
+				<div class="h-full {TAG_COLORS[flowchart.tags[0]]}" style="width: {flowchart.rating}%"></div>
 			</div>
 		</a>
 	{/each}
