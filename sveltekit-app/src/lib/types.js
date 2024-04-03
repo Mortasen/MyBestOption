@@ -53,6 +53,7 @@ export class Flowchart {
 			created: this.created,
 			tags: this.tags,
 			author: author_id,
+			reviews: [],
 		}
 	}
 }

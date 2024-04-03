@@ -1,7 +1,7 @@
 <script>
-	import { collectionStore } from '$lib/_firebase.js';
+	import { db, collectionStore } from '$lib/_firebase.js';
 
-	import { where } from 'firebase/firestore';
+	import { doc, updateDoc, where } from 'firebase/firestore';
 	import { onMount } from 'svelte';
 
 	export let data;
@@ -15,70 +15,7 @@
 	};
 
 	let questionsPassed = 0;
-	$: progress = questionsPassed < 3 ? questionsPassed / 4 : (questionsPassed < 7 ? questionsPassed / (questionsPassed + 2) : questionsPassed / (questionsPassed + 1));
-
-	// let questions = [
-	// 	{
-	// 		id: 1,
-	// 		question: 'Чи знайомі ви з веб-технологіями?',
-	// 		answers: [
-	// 			{ answer: 'Так', nextQuestion: 2 },
-	// 			{ answer: 'Дещо', nextQuestion: 3 },
-	// 			{ answer: 'Ні', nextQuestion: 4 }
-	// 		]
-	// 	},
-	// 	{
-	// 		id: 2,
-	// 		question: 'Чи важливо вам мати можливість оновлювати застосунок без перевірки?',
-	// 		answers: [
-	// 			{ answer: 'Надзвичайно', nextQuestion: 1 },
-	// 			{ answer: 'Було б непогано', nextQuestion: 7 },
-	// 			{ answer: 'Скоріше так', nextQuestion: 8 },
-	// 			{ answer: 'Ні', nextQuestion: 9 },
-	// 			{ answer: 'Ні', nextQuestion: 9 }
-	// 		]
-	// 	},
-	// 	{
-	// 		id: 2,
-	// 		question: 'Чи важливо вам мати можливість оновлювати застосунок без перевірки?',
-	// 		answers: [
-	// 			{ answer: 'Надзвичайно', nextQuestion: 6 },
-	// 			{ answer: 'Було б непогано', nextQuestion: 7 },
-	// 			{ answer: 'Скоріше так', nextQuestion: 8 },
-	// 			{ answer: 'Ні', nextQuestion: 9 }
-	// 		]
-	// 	},
-	// 	{
-	// 		id: 2,
-	// 		question: 'Чи важливо вам мати можливість оновлювати застосунок без перевірки?',
-	// 		answers: [
-	// 			{ answer: 'Надзвичайно', nextQuestion: 6 },
-	// 			{ answer: 'Було б непогано', nextQuestion: 7 },
-	// 			{ answer: 'Скоріше так', nextQuestion: 8 },
-	// 			{ answer: 'Ні', nextQuestion: 9 }
-	// 		]
-	// 	},
-	// 	{
-	// 		id: 2,
-	// 		question: 'Чи важливо вам мати можливість оновлювати застосунок без перевірки?',
-	// 		answers: [
-	// 			{ answer: 'Надзвичайно', nextQuestion: 6 },
-	// 			{ answer: 'Було б непогано', nextQuestion: 7 },
-	// 			{ answer: 'Скоріше так', nextQuestion: 8 },
-	// 			{ answer: 'Ні', nextQuestion: 9 }
-	// 		]
-	// 	},
-	// 	{
-	// 		id: 2,
-	// 		question: 'Чи важливо вам мати можливість оновлювати застосунок без перевірки?',
-	// 		answers: [
-	// 			{ answer: 'Надзвичайно', nextQuestion: 6 },
-	// 			{ answer: 'Було б непогано', nextQuestion: 7 },
-	// 			{ answer: 'Скоріше так', nextQuestion: 8 },
-	// 			{ answer: 'Ні', nextQuestion: 9 }
-	// 		]
-	// 	},
-	// ]
+	$: progress = currentQuestion.answers.length ? (questionsPassed < 2 ? questionsPassed / 3 : questionsPassed / (questionsPassed + 1)): 1;
 
 	let questions = collectionStore('questions', where('flowchart_id', '==', data.id));
 
@@ -121,6 +58,17 @@
 				</button>
 			{/each}
 		{:else}
+			<div>
+				<h3>Оцініть пройдений алгоритм:</h3>
+				<div>
+					<input type="range" min="0" max="100" step="5" bind:value={flowchart.rating} />
+					<p>{flowchart.rating}</p>
+				</div>
+			</div>
+			<button on:click={() => updateDoc(doc(db, 'flowcharts', data.id), { rating: flowchart.rating })}
+					class="w-full text-center text-black hover:text-black p-4 bg-teal-200 rounded-lg text-lg font-medium hover:bg-teal-500 transition">
+				Залишити відгук
+			</button>
 			<a href="/" class="w-full text-center text-black hover:text-black p-4 bg-teal-200 rounded-lg text-lg font-medium hover:bg-teal-500 transition">
 				Вийти в меню
 			</a>
