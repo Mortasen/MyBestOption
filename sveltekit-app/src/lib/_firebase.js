@@ -52,6 +52,10 @@ function userStore() {
 	const { subscribe } = writable(auth?.currentUser ?? null, (set) => {
 		unsubscribe = onAuthStateChanged(auth, (user) => {
 			console.log('@@ Auth state changed!', user)
+			if (user !== null)
+				goto('/');
+			else
+				goto('/auth/sign-in');
 			set(user);
 		});
 
@@ -71,6 +75,7 @@ export const user = userStore();
 
 
 import { collection, query, where, onSnapshot, addDoc, deleteDoc } from "firebase/firestore";
+import { goto } from '$app/navigation';
 
 function liveCollection (collectionName, filter) {
 	let _collectionArray = [];
