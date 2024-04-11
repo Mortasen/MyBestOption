@@ -24,18 +24,18 @@
 			</h1>
 			<form class="mt-8 flex flex-col gap-6" on:submit|preventDefault>
 				<slot />
-				{#if rememberMe || lostPassword}
-					<div class="flex items-start">
-						{#if rememberMe}
-							<label>
-								<input type="checkbox" name="remember" class="text-primary-500 mr-2 size-4">Remember me
-							</label>
-						{/if}
-						{#if lostPassword}
-							<a href={lostPasswordLink} class="ml-auto hover:no-underline transition">Lost Password?</a>
-						{/if}
-					</div>
-				{/if}
+				<!--{#if rememberMe || lostPassword}-->
+				<!--	<div class="flex items-start">-->
+				<!--		{#if rememberMe}-->
+				<!--			<label>-->
+				<!--				<input type="checkbox" name="remember" class="text-primary-500 mr-2 size-4">Remember me-->
+				<!--			</label>-->
+				<!--		{/if}-->
+				<!--		{#if lostPassword}-->
+				<!--			<a href={lostPasswordLink} class="ml-auto hover:no-underline transition">Lost Password?</a>-->
+				<!--		{/if}-->
+				<!--	</div>-->
+				<!--{/if}-->
 				<button type="submit" class="px-4 py-3 rounded-lg font-medium">
 					{submitButtonLabel}
 				</button>

@@ -1,0 +1,87 @@
+/* Write your global styles here, in PostCSS syntax */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    a {
+        @apply text-primary-700 transition;
+    }
+    a:hover {
+        @apply text-primary-500;
+    }
+    button {
+        @apply px-4 py-3 rounded-lg bg-primary-300 hover:bg-primary-400 transition;
+    }
+    input, textarea {
+        @apply w-full px-4 py-3 accent-primary-700 rounded-lg border border-gray-300 transition duration-100;
+    }
+    input::placeholder {
+        @apply text-gray-500;
+    }
+    [type=checkbox] {
+        @apply text-primary-300;
+        --tw-shadow: 0 0 #0000;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-color: #fff;
+        background-origin: border-box;
+        display: inline-block;
+        flex-shrink: 0;
+        padding: 0;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+        vertical-align: middle;
+    }
+    [type=checkbox]:checked {
+        @apply bg-primary-500;
+        background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg aria-hidden='true' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 16 12'%3E%3Cpath stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M1 5.917 5.724 10.5 15 1.5'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-size: .55em .55em;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        background-position: 50%;
+        border-color: transparent;
+    }
+    [type=checkbox] {
+        @apply size-5 rounded-[0.375rem] text-primary-900;
+    }
+    [type=checkbox]:hover {
+        @apply bg-primary-50;
+    }
+    [type=checkbox]:checked:hover {
+        @apply bg-primary-700;
+    }
+}
+
+@layer components {
+    .c-button {
+        @apply inline-block px-4 py-2.5 rounded bg-primary-900 hover:bg-primary-700 transition;
+        @apply text-white font-medium text-center;
+    }
+    .c-button-alt {
+        @apply button;
+        @apply bg-transparent hover:bg-primary-50 border-2 border-gray-300 text-black;
+    }
+}
+
+@layer utilities {
+    .flex-row {
+        display: flex;
+        flex-direction: row;
+    }
+    .flex-col {
+        display: flex;
+        flex-direction: column;
+    }
+    .flex-size {
+        @apply flex-1;
+    }
+    .flex-center {
+        @apply flex items-center justify-center;
+    }
+}

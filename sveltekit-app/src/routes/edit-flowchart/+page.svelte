@@ -209,7 +209,7 @@
 	}
 </style>
 
-<div id="top" class="size-full flex flex-col gap-4">
+<div id="top" class="size-full flex-col gap-4 lg:grid lg:grid-cols-2 2xl:grid-cols-3">
 	<div class="!bg-purple-100 has-[:checked]:flex-grow">
 		<label class="peer bg-purple-400">
 			Алгоритм
@@ -361,7 +361,7 @@
 				<input bind:value={selectedAnswer.next_question} type="text" class="h-auto" />
 			</label>
 			<button on:click={saveAnswer} class="bg-green-400 hover:bg-green-600">
-				Зберегти питання
+				Зберегти відповідь
 			</button>
 		</div>
 	</div>

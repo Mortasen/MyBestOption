@@ -1,8 +1,9 @@
 <script>
-	import { db, collectionStore } from '$lib/_firebase.js';
+	import { db, collectionStore, user } from '$lib/_firebase.js';
 
 	import { doc, updateDoc, where } from 'firebase/firestore';
 	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 
 	export let data;
 
@@ -41,35 +42,34 @@
 	}
 </script>
 
-<div class="size-full flex flex-col gap-4">
-	<p class="text-center">{flowchart.title} {data.id}</p>
+<div class="size-full flex flex-col gap-4 md:px-24 lg:px-48 xl:px-72">
+	<p class="text-center">{flowchart.title}</p>
 	<div class="h-24 flex flex-col justify-center">
 		<h2 class="text-center font-medium text-xl">{currentQuestion.text}</h2>
 	</div>
 	<div class="w-full h-4 rounded-full bg-white border-2 border-teal-900 mb-4">
-		<div class="h-full bg-teal-700" style="width: {progress * 100}%;" />
+		<div class="h-full bg-primary-700" style="width: {progress * 100}%;" />
 	</div>
 	<div class="flex flex-col gap-6">
 		{#if currentQuestion.answers.length}
 			{#each currentQuestion.answers as answer}
 				<button on:click={() => chooseAnswer(answer)}
-						class="p-4 bg-teal-200 rounded-lg text-lg font-medium hover:bg-teal-500 transition">
+						class="p-4 bg-primary-200 rounded-lg text-lg font-medium hover:bg-primary-500 transition">
 					{answer.text}
 				</button>
 			{/each}
 		{:else}
 			<div>
-				<h3>Оцініть пройдений алгоритм:</h3>
+				<h3>Оцініть пройдений алгоритм: <span class="font-bold">{flowchart.rating}</span></h3>
 				<div>
 					<input type="range" min="0" max="100" step="5" bind:value={flowchart.rating} />
-					<p>{flowchart.rating}</p>
 				</div>
 			</div>
 			<button on:click={() => updateDoc(doc(db, 'flowcharts', data.id), { rating: flowchart.rating })}
-					class="w-full text-center text-black hover:text-black p-4 bg-teal-200 rounded-lg text-lg font-medium hover:bg-teal-500 transition">
+					class="w-full text-center text-black hover:text-black p-4 bg-primary-200 rounded-lg text-lg font-medium hover:bg-primary-500 transition">
 				Залишити відгук
 			</button>
-			<a href="/" class="w-full text-center text-black hover:text-black p-4 bg-teal-200 rounded-lg text-lg font-medium hover:bg-teal-500 transition">
+			<a href="/" class="w-full text-center text-black hover:text-black p-4 bg-primary-200 rounded-lg text-lg font-medium hover:bg-primary-500 transition">
 				Вийти в меню
 			</a>
 		{/if}
