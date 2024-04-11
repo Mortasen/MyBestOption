@@ -26,7 +26,7 @@
 		repeatPasswordColor = 'green'
 		createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
 			console.log('Signed up!', user)
-			goto('/dashboard')
+			goto('/');
 		}).catch((error) => {
 			const errorCode = error.code;
 			const errorMessage = error.message;
@@ -37,26 +37,26 @@
 </script>
 
 <AuthForm
-	title="Sign up on platform"
-	submitButtonLabel="Register"
+	title="Реєстрація на платформі"
+	submitButtonLabel="Зареєструватися"
 	alternative="true"
-	alternativeText="Already have an account?"
+	alternativeText="Вже маєте акаунт?"
 	alternativeLink="sign-in"
-	alternativeLinkText="Sign in"
+	alternativeLinkText="Ввійдіть тут"
 	on:submit={handleSignUp}
 >
 	<div>
-		<label for="email" class="mb-2 block">Your email</label>
+		<label for="email" class="mb-2 block">Ваша пошта</label>
 		<input bind:value={email} type="email" name="email" id="email" placeholder="name@company.com" required class="transition duration-300 ease-in-out" />
 		<p color={emailHelperColor}>{emailHelperMessage}</p>
 	</div>
 	<div>
-		<label for="password" class="mb-2 block">Your password</label>
+		<label for="password" class="mb-2 block">Ваш пароль</label>
 		<input bind:value={password} type="password" name="password" id="password" placeholder="••••••••" required class="transition duration-300 ease-in-out" />
 		<p color="{passwordHelperColor}">{passwordHelperMessage}</p>
 	</div>
 	<div>
-		<label for="repeat-password" class="mb-2 block">Repeat password</label>
+		<label for="repeat-password" class="mb-2 block">Повторіть пароль</label>
 		<input bind:value={repeatPassword} color={repeatPasswordColor}
 			   type="password" name="repeat-password" id="repeat-password" placeholder="••••••••" required class="transition duration-300 ease-in-out" />
 	</div>

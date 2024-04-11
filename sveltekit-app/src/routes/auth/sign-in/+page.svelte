@@ -32,24 +32,24 @@
 
 
 <AuthForm
-	title="Sign in to platform"
+	title="Вхід до платформи"
 	rememberMe="true"
 	lostPassword="true"
 	lostPasswordLink="restore"
-	submitButtonLabel="Login to your account"
+	submitButtonLabel="Ввійти в акаунт"
 	alternative="true"
-	alternativeText="Not registered?"
+	alternativeText="Не зареєстровані?"
 	alternativeLink="sign-up"
-	alternativeLinkText="Create account"
+	alternativeLinkText="Створіть акаунт"
 	on:submit={handleSignIn}
 >
 	<div class="*:w-full">
-		<label for="email" class="mb-2 block">Your email</label>
+		<label for="email" class="mb-2 block">Ваша пошта</label>
 		<input bind:value={email} type="email" name="email" id="email"
 			   placeholder="name@company.com" required class="transition duration-300 ease-in-out">
 	</div>
 	<div class="*:w-full">
-		<label for="password" class="mb-2 block">Your password</label>
+		<label for="password" class="mb-2 block">Ваш пароль</label>
 		<input bind:value={password} type="password" name="password" id="password"
 			   placeholder="••••••••" required class="transition duration-300 ease-in-out">
 	</div>
