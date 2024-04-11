@@ -31,8 +31,8 @@ function createWindow() {
 		},
 		minWidth: 430,
 		minHeight: 932,
-		maxWidth: 430,
-		maxHeight: 932,
+		maxWidth: 1920,
+		maxHeight: 1080,
 		webPreferences: {
 			enableRemoteModule: true,
 			contextIsolation: true,
