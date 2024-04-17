@@ -3,10 +3,10 @@
 
 	import { doc, updateDoc, where } from 'firebase/firestore';
 	import { onMount } from 'svelte';
-	import { goto } from '$app/navigation';
 
 	export let data;
 
+	// Initial data to display while loading
 	let flowchart = {
 		'id': 1,
 		'title': 'Який фреймворк для розробки кросплатформеного додатка вибрати?',
@@ -15,11 +15,15 @@
 		'tags': ['Бізнес']
 	};
 
+	// Progress bar
 	let questionsPassed = 0;
+	// When there are less than 3 questions, progress is calculated differently
 	$: progress = currentQuestion.answers.length ? (questionsPassed < 2 ? questionsPassed / 3 : questionsPassed / (questionsPassed + 1)): 1;
 
+	// Get questions for this flowchart
 	let questions = collectionStore('questions', where('flowchart_id', '==', data.id));
 
+	// Get current question
 	let currentIndex = 0;
 	$: currentQuestion = getCurrentQuestion($questions, currentIndex);
 
@@ -28,14 +32,20 @@
 	})
 
 	function getCurrentQuestion (questions, currentIndex) {
-		console.log('Questions:', questions);
-		console.log('Index', currentIndex);
+		/**
+		 * Finds the current question by index
+		 */
+		// console.log('Questions:', questions);
+		// console.log('Index', currentIndex);
 		let res = questions.find(q => q.index == currentIndex);
 		console.log('res', res);
 		return res || {answers: []};
 	}
 
 	function chooseAnswer (answer) {
+		/**
+		 * Chooses an answer and moves to the next question
+		 */
 		console.log('Next question:', answer.next_question);
 		currentIndex = answer.next_question;
 		questionsPassed++;

@@ -7,7 +7,8 @@
 	import { collectionStore, user } from '$lib/_firebase.js';
 	import { goto } from '$app/navigation';
 
-
+	// This map is used to color tags
+	// Tags are statically defined at the moment
 	const TAG_COLORS = {
 		'Бізнес': 'bg-red-600',
 		'Навчання': 'bg-orange-600',
@@ -16,22 +17,30 @@
 		'Інше': 'bg-green-600'
 	}
 
-
 	onMount(() => {
+		/**
+		 * Redirect to sign-in page if user is not authenticated
+		 */
 		console.log('User:', $user);
 		if ($user === null) {
 			goto('/auth/sign-in');
 		}
 	})
 
+	// Fetch flowcharts from Firestore
 	let flowcharts = collectionStore('flowcharts', orderBy('created', 'desc'));
 
+	// Filter flowcharts by selected tags
 	$: flowchartsFiltered = $flowcharts.filter(f => {
+		/**
+		 * If no tags are selected, show all flowcharts
+		 */
 		if (selectedTags.length !== 0) {
 			return any(selectedTags.map(t => f.tags.includes(t)));
 		}
 		return true;
 	})
+	// Array of selected tags
 	let selectedTags = [];
 </script>
 

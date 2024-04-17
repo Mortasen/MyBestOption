@@ -9,6 +9,7 @@
 	import { writable } from 'svelte/store';
 
 
+	// These variables control each of 6 accordion states
 	let selectFlowchartAccordeon = true;
 	let editFlowchartAccordeon = false;
 
@@ -19,7 +20,7 @@
 	let editAnswerAccordeon = false;
 
 
-
+	// Initialize flowcharts state, so that it has some value until auth is resolved
 	let flowcharts = writable(null);
 
 	onMount(() => {
@@ -27,9 +28,14 @@
 		flowcharts = collectionStore('flowcharts', where("author", "==", $user.uid));
 	});
 
+	// Flowchart object that is currently selected for editing
 	let selectedFlowchart = new Flowchart();
 
 	function selectFlowchart (flowchart) {
+		/**
+		 * If flowchart is not undefined, then it is selected for editing.
+		 * If it is undefined, then we are creating a new flowchart.
+		 */
 		selectFlowchartAccordeon = false;
 		if (flowchart !== undefined) {
 			selectedFlowchart = flowchart;
@@ -42,6 +48,10 @@
 	}
 
 	function saveFlowchart () {
+		/**
+		 * If flowchart is new, then we add it to the database.
+		 * If it is not new, then we update it.
+		 */
 		editFlowchartAccordeon = false;
 		if (selectedFlowchart.id === undefined) {
 			flowcharts.add(selectedFlowchart.data($user.uid));
@@ -55,10 +65,14 @@
 
 
 
-
+	// Questions state is initialized as null, so that it has some value until it is fetched
 	let questions = writable(null);
 
 	function fetchQuestions () {
+		/**
+		 * Fetch questions for the selected flowchart.
+		 * If flowchart is not selected, then questions are not fetched.
+		 */
 		console.log('Fetch questions:', selectedFlowchart.id);
 		questions = collectionStore('questions',
 			where("flowchart_id", "==", selectedFlowchart.id),
@@ -66,9 +80,14 @@
 		);
 	}
 
+	// Question object that is currently selected for editing
 	let selectedQuestion = new Question();
 
 	function selectQuestion (question) {
+		/**
+		 * If question is not undefined, then it is selected for editing.
+		 * If it is undefined, then we are creating a new question.
+		 */
 		selectQuestionAccordeon = false;
 		if (question !== undefined) {
 			selectedQuestion = question;
@@ -80,6 +99,10 @@
 	}
 
 	function saveQuestion () {
+		/**
+		 * If question is new, then we add it to the database.
+		 * If it is not new, then we update it.
+		 */
 		console.log('Question to save:', selectedQuestion);
 		editQuestionAccordeon = false;
 		if (selectedQuestion.id === undefined) {
@@ -96,50 +119,14 @@
 		}
 	}
 
-
-
-
-	// let questions = writable(null);
-	// function fetchQuestions () {
-	// 	console.log('fetchQuestions', $user.uid);
-	// 	questions = collectionStore('questions', where("flowchart_id", "==", selectedFlowchart.id));
-	// 	// const q = query(
-	// 	// 	questionsCollection,
-	// 	// 	where("flowchart_id", "==", selectedFlowchart.id)
-	// 	// );
-	// 	// getDocs(q).then(snapshot => {
-	// 	//
-	// 	// 	let questionsSnapshot = snapshot.docs;
-	// 	// 	questions = snapshot.docs.map(doc => Question.initFromDoc(doc));
-	// 	// 	console.log(questions);
-	// 	// });
-	// }
-	//
-	// let selectedQuestion = new Question();
-	//
-	// function selectQuestion (question) {
-	// 	if (question !== undefined)
-	// 		selectedQuestion = question;
-	// 	console.log('Question chosen:', question);
-	// 	selectQuestionAccordeon = false;
-	// 	editQuestionAccordeon = true;
-	// }
-	//
-	// function saveQuestion () {
-	// 	if (selectedQuestion._uid === null) {
-	// 		selectedQuestion.createDoc(questions.length + 1, questions, $user.uid, selectedFlowchart._uid);
-	// 	} else {
-	// 		selectedQuestion.save();
-	// 	}
-	// 	editQuestionAccordeon = false;
-	// 	selectAnswerAccordeon = true;
-	// }
-
-
-	let selectedAnswerIndex = null;
+	// Answer object that is currently selected for editing
 	let selectedAnswer = { text: '', next_question: null };
 
 	function selectAnswer (answer) {
+		/**
+		 * If answer is not undefined, then it is selected for editing.
+		 * If it is undefined, then we are creating a new answer.
+		 */
 		selectAnswerAccordeon = false;
 		if (answer === undefined) {
 			selectedAnswer = { text: '', next_question: null };
@@ -150,11 +137,19 @@
 	}
 
 	function deleteAnswer (answer) {
+		/**
+		 * Delete answer from the selected question.
+		 * If answer is not saved yet, then it is not in the database.
+		 */
 		selectedQuestion.answers = selectedQuestion.answers.filter(a => a.index !== answer.index);
 		questions.update(selectedQuestion.id, { answers: selectedQuestion.answers });
 	}
 
 	function saveAnswer () {
+		/**
+		 * If answer is new, then we add it to the database.
+		 * If it is not new, then we update it.
+		 */
 		editAnswerAccordeon = false;
 		if (selectedAnswer.index === undefined) {
 			selectedAnswer.index = Math.max(0, ...selectedQuestion.answers.map(o => o.index)) + 1;
@@ -166,33 +161,8 @@
 		selectAnswerAccordeon = true;
 	}
 
+	// Tags for flowcharts
 	let tags = [];
-
-	// function selectAnswer (answerIndex) {
-	// 	// console.log('Selected answer index:', answerIndex);
-	// 	// console.log('q', selectedQuestion);
-	// 	if (answerIndex === undefined) {
-	// 		// let answer = { text: '', next_question: null };
-	// 		// selectedAnswerIndex = selectedQuestion.answers.length;
-	// 		// console.log('undef', selectedAnswerIndex);
-	// 		// selectedQuestion.answers = [...selectedQuestion.answers, answer];
-	// 	} else {
-	// 		selectedAnswerIndex = answerIndex;
-	// 	}
-	// 	console.log('selectedAnswerIndex:', selectedAnswerIndex);
-	// 	selectAnswerAccordeon = false;
-	// 	editAnswerAccordeon = true;
-	// }
-	//
-	// function saveAnswer () {
-	// 	if
-	// 	console.log('SAVE selectedAnswer:', selectedAnswerIndex);
-	// 	// selectedQuestion.answers = selectedQuestion.answers;
-	// 	console.log('question:', selectedQuestion);
-	// 	selectedQuestion.save();
-	// 	selectAnswerAccordeon = true;
-	// 	editAnswerAccordeon = false;
-	// }
 </script>
 
 <style>

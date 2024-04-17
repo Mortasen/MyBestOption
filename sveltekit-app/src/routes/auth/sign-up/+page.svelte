@@ -7,17 +7,29 @@
 	import AuthForm from "$lib/components/AuthForm.svelte"
 	import { user } from '$lib/_firebase.js'
 
+	// Form fields values
 	let email = '';
 	let password = '';
 	let repeatPassword = '';
 	let repeatPasswordColor = 'base';
 
+	// Helper text colors and messages
 	let emailHelperColor = 'base';
 	let emailHelperMessage = '';
 	let passwordHelperColor = 'base';
 	let passwordHelperMessage = '';
 
+	// Технічна презентація проекту
+	// Пояснити підхід, як вибирав технологію для реалізації додатка
+	// Архітектуру, зробити діаграму
+	// Продемонструвати весь функціонал застосунка
+
+	//
 	function handleSignUp () {
+		/**
+		 * Creates user account with email and password taken from input fields.
+		 * Redirects to home page if successful.
+		 */
 		repeatPasswordColor = 'base'
 		if (repeatPassword !== password) {
 			repeatPasswordColor = 'red'
@@ -39,7 +51,7 @@
 <AuthForm
 	title="Реєстрація на платформі"
 	submitButtonLabel="Зареєструватися"
-	alternative="true"
+	alternative={true}
 	alternativeText="Вже маєте акаунт?"
 	alternativeLink="sign-in"
 	alternativeLinkText="Ввійдіть тут"

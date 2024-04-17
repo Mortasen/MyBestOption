@@ -5,9 +5,15 @@
 	import AuthForm from '$lib/components/AuthForm.svelte';
 	const auth = getAuth();
 
+	// This variable holds the email entered by user
 	let email = '';
+	// This variable holds the password entered by user
 	let password = '';
+
 	function handleSignIn () {
+		/**
+		 * Signs user in with email and password taken from input fields
+		 */
 		signInWithEmailAndPassword(auth, email, password)
 			.then((userCredential) => {
 				const user = userCredential.user;
@@ -20,24 +26,10 @@
 	}
 </script>
 
-<!--<div class="flex flex-col gap-6 text-center">-->
-<!--	<h2 class="text-xl font-medium py-6">Sign in</h2>-->
-<!--	<input bind:value={email} type="email" class="px-2 border-2 border-teal-900 h-12 rounded-lg">-->
-<!--	<input bind:value={password} type="password" class="px-2 border-2 border-teal-900 h-12 rounded-lg">-->
-<!--	<button on:click={handleSignIn} class="h-12 rounded-lg bg-teal-300 hover:bg-teal-500">-->
-<!--		Sign In-->
-<!--	</button>-->
-<!--	<a href="/auth/sign-up">Sign up</a>-->
-<!--</div>-->
-
-
 <AuthForm
 	title="Вхід до платформи"
-	rememberMe="true"
-	lostPassword="true"
-	lostPasswordLink="restore"
 	submitButtonLabel="Ввійти в акаунт"
-	alternative="true"
+	alternative={true}
 	alternativeText="Не зареєстровані?"
 	alternativeLink="sign-up"
 	alternativeLinkText="Створіть акаунт"
